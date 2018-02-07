@@ -38,9 +38,9 @@ const getWeather = () => {
 
 const conWeather = (resData) => {
   var reData = []
-  console.log(resData)
+  // console.log(resData)
   reData = resData.data.forecast
-  console.log(reData)
+  // console.log(reData)
   let time = new Date()
   let day = time.getDate()
   let mon = time.getMonth() + 1
@@ -51,41 +51,42 @@ const conWeather = (resData) => {
   let i = 10*Math.random().toFixed(1)
   
   let conts = `
+    <b>早呀丁胖子～</b>
+    <br/><br/>
+    现在是北京时间${year}-${mon}-${day} ${hour}:${min}:${sec}。<br/>
+    你所在地海淀区此时的气候为：<br/>
+    温度：${resData.data.wendu}℃，<br/>
+    湿度：${resData.data.shidu}，<br/>
+    PM2.5:${resData.data.pm25}，<br/>
+    属${resData.data.quality}，${resData.data.ganmao}。<br/>
+    <br/><br/>
 
-    现在是北京时间${year}-${mon}-${day} ${hour}:${min}:${sec}。
-    你所在地海淀区此时的气候为：
-    温度：${resData.data.wendu}℃，
-    湿度：${resData.data.shidu}，
-    PM2.5:${resData.data.pm25}，
-    属${resData.data.quality}，${resData.data.ganmao}。
+    接下来今明两天天气情况：<br/>
+    ${reData[0].date}：<br/>
+    ${reData[0].high}，${reData[0].low}，<br/>
+    ${reData[0].type},<br/>
+    日出：${reData[0].sunrise}，日落：${reData[0].sunset}，<br/>
+    空气指数（PM2.5）：${reData[0].aqi}，<br/>
+    ${reData[0].fl}${reData[0].fx},<br/>
+    ${reData[0].notice}。<br/>
+    <br/><br/>
+    ${reData[1].date}：<br/>
+    ${reData[1].high}，${reData[1].low}，<br/>
+    ${reData[1].type},<br/>
+    日出：${reData[1].sunrise}，日落：${reData[1].sunset}，<br/>
+    空气指数（PM2.5）：${reData[1].aqi}，<br/>
+    ${reData[1].fl}${reData[1].fx},<br/>
+    ${reData[1].notice}<br/>
 
+    <br/><br/>
+    早安物语:<br/>
+    ${config.morings[i]}<br/>
+    <br/><br/>
 
-    接下来今明两天天气情况：
-    ${reData[0].date}：
-    ${reData[0].high}，${reData[0].low}，
-    ${reData[0].type},
-    日出：${reData[0].sunrise}，日落：${reData[0].sunset}，
-    空气指数（PM2.5）：${reData[0].aqi}，
-    ${reData[0].fl}${reData[0].fx},
-    ${reData[0].notice}。
-
-    ${reData[1].date}：
-    ${reData[1].high}，${reData[1].low}，
-    ${reData[1].type},
-    日出：${reData[1].sunrise}，日落：${reData[1].sunset}，
-    空气指数（PM2.5）：${reData[1].aqi}，
-    ${reData[1].fl}${reData[1].fx},
-    ${reData[1].notice}
-
-
-    早安物语:
-    ${config.morings[i]}
-
-
-    当然啦，还有昨天的工作汇报～回复邮件等我起床即可收到哟～
-
-    end 
-    by vadxq
+    当然啦，还有昨天的工作汇报～回复邮件等我起床即可收到哟～<br/>
+    <br/><br/>
+    end <br/>
+    by vadxq<br/>
   `
   console.log(conts)
   mails(conts)
@@ -100,11 +101,11 @@ const scheduleTask = (time) => {
     getWeather()
   })
 }
-let atime = '00 00 07 * * *'
+let atime = '50 09 03 * * *'
 scheduleTask(atime)
 
 // 邮件服务
-const mails = (data) => {
+const mails = (conts) => {
   nodemailer.createTestAccount((err, account) => {
     let transporter = nodemailer.createTransport({
       host: auth.port.host,
@@ -118,7 +119,7 @@ const mails = (data) => {
       to: auth.tomail, 
       subject: config.detailMail.subject,
       text: config.detailMail.text,
-      html: data
+      html: conts
     }
     
     transporter.sendMail(mailOptions, (error, info) => {
