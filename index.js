@@ -101,7 +101,7 @@ const scheduleTask = (time) => {
     getWeather()
   })
 }
-let atime = '50 09 03 * * *'
+let atime = '00 00 07 * * *'
 scheduleTask(atime)
 
 // 邮件服务
