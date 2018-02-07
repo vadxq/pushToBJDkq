@@ -1,8 +1,7 @@
 'use strict'
 const schedule = require('node-schedule'),
   nodemailer = require('nodemailer'),
-  // http = require('http'),  
-  axios = require('axios'),
+  request = require('request'),
   fs = require('fs'),
   config = require('./config'),
   auth = require('./auth')
@@ -20,60 +19,28 @@ const logger = (msg, info) => {
   })
 }
 
-// 请求天气
+//　天气
 const getWeather = () => {
-  return axios.get('http://www.sojson.com/open/api/weather/json.shtml', {
-      params: {
-        city: '海淀区'
-      }
-    })
-    .then(res => {
-      // console.log(res.data)
-      if (res.status = 200) {
-        return Promise.resolve(res.data)
+  request.get({url: 'http://www.sojson.com/open/api/weather/json.shtml', qs: {'city': '海淀区'}}, function (error, res, body) {
+    // console.log(body)
+    if (!error && res.statusCode == 200) {
+      // resData = body.data
+      let data = JSON.parse(body)
+      if (data.status = 200) {
+        // console.log(data)
+        conWeather(data)
       } else {
-        logger(res.data, 'ERROR')
+        logger(data, 'ERROR')
       }
-    })
-    .catch(error => {
-      console.log(error)
-      logger(error, 'ERROR')
-    })
-  }
+    }
+  })
+}
 
-// 早上　天气（温度，ｔｙｐｅ，湿度，感冒，污染情况，ｐｍ２．５，) 一句励志或者是温馨的话　工作进度汇报
-
-const conWeather = () => {
-  var resData = getWeather()
-  // request('http://www.sojson.com/open/api/weather/json.shtml?city=海淀区', function (error, res, body) {
-  //   if (!error && res.statusCode == 200) {
-  //     console.log(body) // 打印google首页
-  //     resData = 
-  //   }
-  // })
-  // var resData = http.get('http://www.sojson.com/open/api/weather/json.shtml?city=海淀区', (res) => {
-  //   var body = ''
-  //   console.log('ddd'+res)
-  //   res.on('data', (d) => {
-  //     body += d
-  //   })
-  //   res.on('end', function() {
-  //     // Data reception is done, do whatever with it!
-  //     var parsed = JSON.parse(body)
-  //     if (parsed.status = 200) {
-  //       return parsed.data
-          
-  //     } else {
-  //       logger(parsed.data, 'ERROR')
-  //     }
-  // })
-  // }).on('error', function(e) {
-  //   console.log("Got error: " + e.message)
-  //   logger(e.message, 'ERROR')
-  // })
-
+const conWeather = (resData) => {
+  var reData = []
   console.log(resData)
-  let reData = resData.forecast
+  reData = resData.data.forecast
+  console.log(reData)
   let time = new Date()
   let day = time.getDate()
   let mon = time.getMonth() + 1
@@ -81,63 +48,62 @@ const conWeather = () => {
   let min = time.getMinutes()
   let sec = time.getSeconds()
   let hour = time.getHours()
-  return `
-  现在是北京时间${year}-${mon}-${day} ${hour}:${min}:${sec}。
-  温度：${resData.wendu}℃，
-  湿度：${resData.shidu}，
-  PM2.5:${resData.pm25}，
-  属${resData.quality}，${resData.ganmao}。
+  let i = 10*Math.random().toFixed(1)
+  
+  let conts = `
+
+    现在是北京时间${year}-${mon}-${day} ${hour}:${min}:${sec}。
+    你所在地海淀区此时的气候为：
+    温度：${resData.data.wendu}℃，
+    湿度：${resData.data.shidu}，
+    PM2.5:${resData.data.pm25}，
+    属${resData.data.quality}，${resData.data.ganmao}。
 
 
-  接下来今明三天天气情况：
-  ${reData[0].date}：
-  ${reData[0].high}，${reData[0].low}，
-  ${reData[0].type},
-  日出：${reData[0].sunrise}，日落：${reData[0].sunset}，
-  空气指数（PM2.5）：${reData[0].aqi}，
-  ${reData[0].fl}${reData[0].fx},
-  ${reData[0].notice}。
+    接下来今明两天天气情况：
+    ${reData[0].date}：
+    ${reData[0].high}，${reData[0].low}，
+    ${reData[0].type},
+    日出：${reData[0].sunrise}，日落：${reData[0].sunset}，
+    空气指数（PM2.5）：${reData[0].aqi}，
+    ${reData[0].fl}${reData[0].fx},
+    ${reData[0].notice}。
 
-  ${reData[1].date}：
-  ${reData[1].high}，${reData[1].low}，
-  ${reData[1].type},
-  日出：${reData[1].sunrise}，日落：${reData[1].sunset}，
-  空气指数（PM2.5）：${reData[1].aqi}，
-  ${reData[1].fl}${reData[1].fx},
-  ${reData[1].notice}
+    ${reData[1].date}：
+    ${reData[1].high}，${reData[1].low}，
+    ${reData[1].type},
+    日出：${reData[1].sunrise}，日落：${reData[1].sunset}，
+    空气指数（PM2.5）：${reData[1].aqi}，
+    ${reData[1].fl}${reData[1].fx},
+    ${reData[1].notice}
+
+
+    早安物语:
+    ${config.morings[i]}
+
+
+    当然啦，还有昨天的工作汇报～回复邮件等我起床即可收到哟～
+
+    end 
+    by vadxq
   `
+  console.log(conts)
+  mails(conts)
 }
 
-let con = conWeather()
-console.log(con)
-// const getWeather = axios.get('http://www.sojson.com/open/api/weather/json.shtml', {
-//     params: {
-//       city: '海淀区'
-//     }
-//   })
-//   .then(res => {
-//     console.log(res.data)
-//     if (res.status = 200) {
-//       await conWeather(res.data)
-//     } else {
-//       logger(res.data, 'ERROR')
-//     }
-//   })
-//   .catch(error => {
-//     console.log(error)
-//     logger(error, 'ERROR')
-//   })
-
-const scheduleTask = (time, data) => {
+//　定时
+const scheduleTask = (time) => {
   schedule.scheduleJob(time, () => {
-    console.log(data)
-    logger(time, 'WARN')
-    logger(data, 'data')
-    mails(data)
+    // console.log(data)
+    // logger(time, 'WARN')
+    // logger(data, 'data')
+    getWeather()
   })
 }
+let atime = '00 00 07 * * *'
+scheduleTask(atime)
 
-//邮件服务
+// 邮件服务
 const mails = (data) => {
   nodemailer.createTestAccount((err, account) => {
     let transporter = nodemailer.createTransport({
