@@ -1,6 +1,6 @@
 exports.auth = {
   user: 'dongxianlin@vadxq.com',
-  pass: '********' // 授权码，不是密码
+  pass: '*********' // 授权码，不是密码
 }
 
 exports.port = {

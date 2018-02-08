@@ -31,6 +31,7 @@ const getWeather = () => {
         conWeather(data)
       } else {
         logger(data, 'ERROR')
+        setTimeout(getWeather(), 2000)
       }
     }
   })
