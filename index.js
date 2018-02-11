@@ -50,6 +50,7 @@ const conWeather = (resData) => {
   let sec = time.getSeconds()
   let hour = time.getHours()
   let i = 10*Math.random().toFixed(1)
+  let j = 10 + 10*Math.random().toFixed(1)
   
   let conts = `
     <b>早呀丁胖子～</b>
@@ -82,9 +83,11 @@ const conWeather = (resData) => {
     <br/><br/>
     早安物语:<br/>
     ${config.morings[i]}<br/>
+    <br/>
+    ${config.morings[j]}<br/>
     <br/><br/>
 
-    当然啦，还有昨天的工作汇报～回复邮件等我起床即可收到哟～<br/>
+    当然啦，还有昨天的工作汇报～不管在哪，我都愿能在这个寒假与你分享，与你相伴～<br/>
     <br/><br/>
     end <br/>
     by vadxq<br/>
