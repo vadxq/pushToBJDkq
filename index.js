@@ -20,15 +20,15 @@ const logger = (msg, info) => {
 }
 
 //　天气
-const getWeather = () => {
-  request.get({url: 'http://www.sojson.com/open/api/weather/json.shtml', qs: {'city': '海淀区'}}, function (error, res, body) {
+const getWeather = (addr) => {
+  request.get({url: 'http://www.sojson.com/open/api/weather/json.shtml', qs: {'city': addr}}, function (error, res, body) {
     // console.log(body)
     if (!error && res.statusCode == 200) {
       // resData = body.data
       let data = JSON.parse(body)
       if (data.status = 200) {
         // console.log(data)
-        conWeather(data)
+        conWeather(data, addr)
       } else {
         logger(data, 'ERROR')
         setTimeout(getWeather(), 2000)
@@ -37,7 +37,7 @@ const getWeather = () => {
   })
 }
 
-const conWeather = (resData) => {
+const conWeather = (resData, addr) => {
   var reData = []
   // console.log(resData)
   reData = resData.data.forecast
@@ -53,10 +53,10 @@ const conWeather = (resData) => {
   let j = 10 + 10*Math.random().toFixed(1)
   
   let conts = `
-    <b>早呀丁胖子～</b>
+    <b>哈喽丁胖子～</b>
     <br/><br/>
     现在是北京时间${year}-${mon}-${day} ${hour}:${min}:${sec}。<br/>
-    你所在地海淀区此时的气候为：<br/>
+    你所在地${addr}此时的气候为：<br/>
     温度：${resData.data.wendu}℃，<br/>
     湿度：${resData.data.shidu}，<br/>
     PM2.5:${resData.data.pm25}，<br/>
@@ -81,13 +81,14 @@ const conWeather = (resData) => {
     ${reData[1].notice}<br/>
 
     <br/><br/>
-    早安物语:<br/>
+    伴你物语:<br/>
     ${config.morings[i]}<br/>
     <br/>
     ${config.morings[j]}<br/>
     <br/><br/>
 
-    当然啦，还有昨天的工作汇报～不管在哪，我都愿能在这个寒假与你分享，与你相伴～<br/>
+    愿你路途平安～不管在哪，我都愿能在这个寒假与你分享，与你相伴～<br/>
+    除夕快乐～新年快乐～
     <br/><br/>
     end <br/>
     by vadxq<br/>
@@ -97,16 +98,35 @@ const conWeather = (resData) => {
 }
 
 //　定时
-const scheduleTask = (time) => {
+const scheduleTask = (time, data) => {
   schedule.scheduleJob(time, () => {
-    // console.log(data)
+    console.log(data)
     // logger(time, 'WARN')
-    // logger(data, 'data')
-    getWeather()
+    logger(data, 'data')
+    getWeather(data)
   })
 }
-let atime = '59 59 06 * * *'
-scheduleTask(atime)
+
+let hdTime = '59 59 04 * * *'
+let tjTime = '30 30 07 * * *'
+let ncTime = '59 30 11 * * *'
+let gzTime = '30 40 16 * * *'
+
+let hdAddr = '海淀区'
+let tjAddr = '天津'
+let ncAddr = '南昌'
+let gzAddr = '宁都'
+
+// test
+// let hdTime = '59 50 19 * * *'
+// let tjTime = '30 50 19 * * *'
+// let ncTime = '40 50 19 * * *'
+// let gzTime = '20 50 19 * * *'
+
+scheduleTask(hdTime, hdAddr)
+scheduleTask(tjTime, tjAddr)
+scheduleTask(ncTime, ncAddr)
+scheduleTask(gzTime, gzAddr)
 
 // 邮件服务
 const mails = (conts) => {

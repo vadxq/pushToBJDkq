@@ -1,6 +1,6 @@
 exports.detailMail = {
-  subject: '早安～丁麻麻～',
-  text: '早呀丁胖子～'
+  subject: '嗨呀～丁麻麻～',
+  text: '哈喽丁胖子～'
 }
 
 exports.morings = [
