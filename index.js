@@ -87,8 +87,8 @@ const conWeather = (resData, addr) => {
     ${config.morings[j]}<br/>
     <br/><br/>
 
-    愿你路途平安～不管在哪，我都愿能在这个寒假与你分享，与你相伴～<br/>
-    除夕快乐～新年快乐～
+    不管在哪，我都愿能在这个寒假与你分享，与你相伴～<br/>
+    新年快乐～
     <br/><br/>
     end <br/>
     by vadxq<br/>
@@ -107,14 +107,14 @@ const scheduleTask = (time, data) => {
   })
 }
 
-let hdTime = '59 59 04 * * *'
-let tjTime = '30 30 07 * * *'
-let ncTime = '59 30 11 * * *'
-let gzTime = '30 40 16 * * *'
+//let hdTime = '59 59 04 * * *'
+//let tjTime = '30 30 07 * * *'
+//let ncTime = '59 30 11 * * *'
+let gzTime = '30 40 08 * * *'
 
-let hdAddr = '海淀区'
-let tjAddr = '天津'
-let ncAddr = '南昌'
+//let hdAddr = '海淀区'
+//let tjAddr = '天津'
+//let ncAddr = '南昌'
 let gzAddr = '宁都'
 
 // test
@@ -123,9 +123,9 @@ let gzAddr = '宁都'
 // let ncTime = '40 50 19 * * *'
 // let gzTime = '20 50 19 * * *'
 
-scheduleTask(hdTime, hdAddr)
-scheduleTask(tjTime, tjAddr)
-scheduleTask(ncTime, ncAddr)
+//scheduleTask(hdTime, hdAddr)
+//scheduleTask(tjTime, tjAddr)
+//scheduleTask(ncTime, ncAddr)
 scheduleTask(gzTime, gzAddr)
 
 // 邮件服务
