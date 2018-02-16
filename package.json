@@ -2,8 +2,9 @@
   "name": "pushtobjdkq",
   "version": "1.0.0",
   "description": "weather and to remind of zhe time and others",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

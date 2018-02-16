@@ -6,6 +6,7 @@ const schedule = require('node-schedule'),
   config = require('./config'),
   auth = require('./auth')
 
+
 // logs
 const logger = (msg, info) => {
   let time = (new Date).toLocaleString()
@@ -21,10 +22,10 @@ const logger = (msg, info) => {
 
 //　天气
 const getWeather = (addr) => {
+  // 这里用了www.sojson.com提供的天气接口，非常感谢～详情可以去网站看看哟!
   request.get({url: 'http://www.sojson.com/open/api/weather/json.shtml', qs: {'city': addr}}, function (error, res, body) {
     // console.log(body)
     if (!error && res.statusCode == 200) {
-      // resData = body.data
       let data = JSON.parse(body)
       if (data.status = 200) {
         // console.log(data)
@@ -35,6 +36,18 @@ const getWeather = (addr) => {
       }
     }
   })
+}
+
+// 处理ｗｏｒｄ
+const dealWord = () => {
+  let moLen = config.morings.length
+  let i = ~~(moLen*Math.random())
+  console.log(i)
+  if (i>0) {
+    return i
+  } else {
+    dealWord()
+  }
 }
 
 const conWeather = (resData, addr) => {
@@ -49,11 +62,10 @@ const conWeather = (resData, addr) => {
   let min = time.getMinutes()
   let sec = time.getSeconds()
   let hour = time.getHours()
-  let i = 10*Math.random().toFixed(1)
-  let j = 10 + 10*Math.random().toFixed(1)
+  let i = dealWord()
   
   let conts = `
-    <b>哈喽丁胖子～</b>
+    <b>${config.detailMail.text}</b>
     <br/><br/>
     现在是北京时间${year}-${mon}-${day} ${hour}:${min}:${sec}。<br/>
     你所在地${addr}此时的气候为：<br/>
@@ -81,17 +93,14 @@ const conWeather = (resData, addr) => {
     ${reData[1].notice}<br/>
 
     <br/><br/>
-    伴你物语:<br/>
+    早安物语:<br/>
     ${config.morings[i]}<br/>
-    <br/>
-    ${config.morings[j]}<br/>
     <br/><br/>
 
-    不管在哪，我都愿能在这个寒假与你分享，与你相伴～<br/>
-    新年快乐～
+    不管在哪，我都愿能在这个世界与你分享，与你相伴～<br/>
     <br/><br/>
     end <br/>
-    by vadxq<br/>
+    by ${config.detailMail.name}<br/>
   `
   console.log(conts)
   mails(conts)
@@ -110,23 +119,20 @@ const scheduleTask = (time, data) => {
 //let hdTime = '59 59 04 * * *'
 //let tjTime = '30 30 07 * * *'
 //let ncTime = '59 30 11 * * *'
-let gzTime = '30 40 08 * * *'
+// let gzTime = '30 40 08 * * *'
 
 //let hdAddr = '海淀区'
 //let tjAddr = '天津'
 //let ncAddr = '南昌'
-let gzAddr = '宁都'
+// let gzAddr = '宁都'
 
-// test
-// let hdTime = '59 50 19 * * *'
-// let tjTime = '30 50 19 * * *'
-// let ncTime = '40 50 19 * * *'
-// let gzTime = '20 50 19 * * *'
+const getInfo = () => {
+  config.weatherData.map((obj) => {
+    scheduleTask(obj.time, obj.addr)
+  })
+}
 
-//scheduleTask(hdTime, hdAddr)
-//scheduleTask(tjTime, tjAddr)
-//scheduleTask(ncTime, ncAddr)
-scheduleTask(gzTime, gzAddr)
+getInfo()
 
 // 邮件服务
 const mails = (conts) => {
