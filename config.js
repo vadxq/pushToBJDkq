@@ -11,8 +11,8 @@ exports.weatherData = [
   //  time: ''
   //},
   {
-    addr: '宁都',
-    time: '30 30 07 * * *' // 秒　分　时　天　月　周
+    addr: '海淀区',
+    time: '59 59 06 * * *' // 秒　分　时　天　月　周
   }
 ]
 
