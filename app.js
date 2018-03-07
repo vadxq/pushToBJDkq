@@ -23,7 +23,7 @@ const logger = (msg, info) => {
 //　天气
 const getWeather = (addr) => {
   // 这里用了www.sojson.com提供的天气接口，非常感谢～详情可以去网站看看哟!
-  request.get({url: 'http://www.sojson.com/open/api/weather/json.shtml', qs: {'city': addr}}, function (error, res, body) {
+  request.get({url: 'https://www.sojson.com/open/api/weather/json.shtml', qs: {'city': addr}}, function (error, res, body) {
     // console.log(body)
     if (!error && res.statusCode == 200) {
       let data = JSON.parse(body)
